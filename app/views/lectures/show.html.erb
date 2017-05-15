@@ -1,0 +1,55 @@
+
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @lecture.title %>
+</p>
+
+<p>
+  <strong>Content:</strong>
+  <%= @lecture.content.html_safe %>
+</p>
+
+
+<p>
+  <strong>Attachment:</strong>
+  <% if @lecture.attachment? %>
+    <%= link_to "Download", @lecture.attachment.url(:original, false) %>
+  <% else %>
+    <p>No attachments available</p>
+  <% end %>
+</p>
+
+<p>
+  <strong>Course:</strong>
+  <%= link_to @lecture.course.title, @lecture.course %>
+</p>
+
+<p>
+  <strong>Lecturer:</strong>
+  <%= @lecture.user.name %>
+</p>
+
+<%= link_to 'Edit', edit_lecture_path(@lecture) %> |
+<%= link_to 'Back', lectures_path %>
+
+<hr>
+<% @lecture.comments.all.each do |comment| %>
+  <h2><span style="color: brown;"><%= comment.title%></span> <span style="font-size: 10px;"><%= @controller.time_ago_in_words(comment.created_at) %></span></h2>
+  <h4>By <%= comment.user.name %> </h4>
+  <p><%= comment.comment %></p>
+<% end %>
+<% if user_signed_in? %>
+  <%= form_for(@comment, :url => comment_lecture_path(@lecture))  do |f| %>
+    <div class="field">
+      <%= f.text_field :title, :placeholder => "Comment title" %>
+    </div>
+    <div class="field">
+      <%= f.text_area :comment, :placeholder => "Comment content" %>
+    </div>
+    <div class="actions">
+      <%= f.submit %>
+    </div>
+  <% end %>
+<% end %>

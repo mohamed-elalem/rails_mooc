@@ -1,0 +1,41 @@
+
+<div class="container">
+<%= form_for(@lecture, :html => {:multipart => true }) do |f| %>
+  <% if @lecture.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@lecture.errors.count, "error") %> prohibited this lecture from being saved:</h2>
+
+      <ul>
+      <% @lecture.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field form-group">
+    <%= f.text_field :title, :placeholder => "Title.." %><br><br><br><br>
+  </div>
+  <div class="field form-group">
+    <%= f.text_area :content, :placeholder => "Contents..", :class => "ckeditor" %>
+  </div>
+
+  <div class="field form-group">
+    <%= f.label :attachment %><br>
+    <%= f.file_field :attachment %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+</div>
+
+
+<script>
+  $(document).ready(function() {
+    $('.ckeditor').ckeditor({
+        // optional config
+    });
+  });
+  
+</script>

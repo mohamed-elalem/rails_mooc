@@ -1,0 +1,69 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @course.title %>
+</p>
+<p>
+  <strong>Lecturer:</strong>
+  <%= @course.user.name %>
+</p>
+<p>
+  <strong>Overview:</strong>
+  <%= @course.content %>
+</p>
+
+
+<p>
+  <strong> Lectures </strong>
+  <table class="table table-responsive table-hover">
+    <th>
+      Lecture Title
+    </th>
+    <th>Likes</th>
+    <th>Spams</th>
+    <th colspan="8" class="text-center">
+      Actions
+    </th>
+  <% @course.lectures.each do |lecture| %>
+    <tr>
+      <td>
+        <%= link_to lecture.title, lecture %>
+      </td>
+      <td>
+        <%= lecture.get_up_votes(:vote_scope => "like").size %>
+      </td>
+      <td>
+        <%= lecture.get_up_votes(:vote_scope => "spam").size %>
+      </td>
+      <% if user_signed_in? && current_user.courses.all.include?(@course) %>
+      <td>
+        <%= link_to 'Edit', edit_lecture_path(lecture) %>
+      </td>
+      <td><%= link_to 'Destroy', lecture, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  
+      <% end %>
+        <td>
+      <% if user_signed_in?() && current_user.voted_up_on?(lecture, :vote_scope => "like") %>
+          <%= link_to "Unlike", unlike_lecture_path(lecture), :method => "delete" %>
+      <% elsif user_signed_in?() %>
+          <%= link_to "Like", like_lecture_path(lecture), :method => "put" %>
+      <% end %> 
+        </td>
+        <td>
+      <% if user_signed_in?() && current_user.voted_up_on?(lecture, :vote_scope => "spam") %>
+          <%= link_to "Unspam", unspam_lecture_path(lecture), :method => "delete" %>
+      <% elsif user_signed_in?() %>
+          <%= link_to "Spam", spam_lecture_path(lecture), :method => "put" %>
+      <% end %> 
+        </td>
+    </tr>
+  <% end %>
+  </table>
+</p>
+<% if user_signed_in? && current_user.courses.all.include?(@course) && current_user.is?("instructor") %>
+<%= link_to 'Edit Course', edit_course_path(@course) %>
+<%= link_to 'New lecture', new_lecture_course_path(@course) %> 
+<% end %>
+<%= link_to 'Back', courses_path %>
+
